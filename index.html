@@ -36,11 +36,36 @@
   <div id="result">Point the camera at a QR code.</div>
 
   <script>
+
+    const DTS_URL =
+      "https://script.google.com/macros/s/AKfycbylUvoPorCJVmoEI_pEnSM4N-0eBo98JuKzsKyGm2R-ehaAaKTzwe13dKUjngi0QXWG4w/exec";
+
+    let alreadyScanned = false;
+
     function onScanSuccess(decodedText) {
+
+      if (alreadyScanned) return;
+
+      alreadyScanned = true;
+
       document.getElementById("result").innerText =
         "QR detected: " + decodedText;
 
-      scanner.clear();
+      scanner.clear().then(function() {
+
+        const destination =
+          DTS_URL + "?qr=" + encodeURIComponent(decodedText);
+
+        window.location.href = destination;
+
+      }).catch(function(error) {
+
+        const destination =
+          DTS_URL + "?qr=" + encodeURIComponent(decodedText);
+
+        window.location.href = destination;
+
+      });
     }
 
     function onScanFailure(error) {
@@ -60,6 +85,7 @@
     );
 
     scanner.render(onScanSuccess, onScanFailure);
+
   </script>
 
 </body>
